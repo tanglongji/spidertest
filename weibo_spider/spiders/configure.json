@@ -1,0 +1,13 @@
+{
+    "url_list": ["https://weibo.com/swarovskicom?is_all=1"
+                ],
+    "headers": {
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "accept-encoding": "gzip, deflate, br",
+        "accept-language": "zh-CN,zh;q=0.9",
+        "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"
+        
+    },
+    "cookie": "SINAGLOBAL=9335271419770.348.1618145465990; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WFqinPqOpH2mEMEkX4WU88h5JpX5KMhUgL.FoM0ShM4eh2fe0B2dJLoI0nLxKBLB.2LBKBLxK-L1hMLB.2LxKnL1hMLB-BLxKnLBo2L1hqLxKnL1h-L1K5LxKnL1-zL12ikM7tt; wvr=6; ALF=1659058879; SSOLoginState=1627522879; SCF=AuySD0bBzNOYKpAtz7M9HjkyH4XhG6cWjOi38AAEJInEHodqPTkHaOCuz8JiVRDEuFRJbUjFRW92aS_dDf2wpHc.; SUB=_2A25MBncQDeRhGeFN71UY8C_JyDiIHXVvcu_YrDV8PUNbmtAKLRjBkW9NQA7feBB437j6JznClLaTztvPjZmNeAh1; _s_tentry=login.sina.com.cn; Apache=1451682088435.2666.1627522887538; ULV=1627522887721:356:99:18:1451682088435.2666.1627522887538:1627516380930; wb_view_log_7347901534=1280*7201.5&3440*14401; UOR=www.baidu.com,s.weibo.com,teams.microsoft.com; webim_unReadCount={'time':1627550987107,'dm_pub_total':0,'chat_group_client':0,'chat_group_notice':0,'allcountNum':0,'msgbox':0}"
+
+}
