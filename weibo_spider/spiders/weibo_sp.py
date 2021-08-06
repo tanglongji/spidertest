@@ -35,29 +35,19 @@ def get_config():
     try:
         with open(config_path, encoding='utf-8') as f:
             config = json.loads(f.read())
-            # print('config')
-            # print('_' * 30)
-            # print(config)
-            # print('_' * 30)
+            
             return config
     except Exception as e:
-        # print(e.__traceback__)
+        
         sys.exit()
 
-# cookie = 'SINAGLOBAL=9335271419770.348.1618145465990; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WFqinPqOpH2mEMEkX4WU88h5JpX5KMhUgL.FoM0ShM4eh2fe0B2dJLoI0nLxKBLB.2LBKBLxK-L1hMLB.2LxKnL1hMLB-BLxKnLBo2L1hqLxKnL1h-L1K5LxKnL1-zL12ikM7tt; wvr=6; ALF=1659058879; SSOLoginState=1627522879; SCF=AuySD0bBzNOYKpAtz7M9HjkyH4XhG6cWjOi38AAEJInEHodqPTkHaOCuz8JiVRDEuFRJbUjFRW92aS_dDf2wpHc.; SUB=_2A25MBncQDeRhGeFN71UY8C_JyDiIHXVvcu_YrDV8PUNbmtAKLRjBkW9NQA7feBB437j6JznClLaTztvPjZmNeAh1; _s_tentry=login.sina.com.cn; Apache=1451682088435.2666.1627522887538; ULV=1627522887721:356:99:18:1451682088435.2666.1627522887538:1627516380930; wb_view_log_7347901534=1280*7201.5&3440*14401; UOR=www.baidu.com,s.weibo.com,teams.microsoft.com; webim_unReadCount={"time":1627550987107,"dm_pub_total":0,"chat_group_client":0,"chat_group_notice":0,"allcountNum":0,"msgbox":0}'
 
 class T11Spider(scrapy.Spider):
     name = 'weibo_sp'
     allowed_domains = ['m.weibo.cn','weibo.com']
-    # start_urls = ['https://m.weibo.cn/api/container/getIndex?containerid=100505{0}'.format(user_id) for user_id in config['user_id_list']]
-    # start_urls = ['https://weibo.com/igaming?refer_flag=0000015010_&from=feed&loc=nickname&is_all=1']
-    # start_urls = ['https://m.weibo.cn/api/container/getIndex?containerid=107603{0}&page=1'.format(user_id)
-    #               for user_id in config['user_id_list']]
+    
     def start_requests(self):
-        # url = 'https://weibo.com/sportschannel?from=page_100505_profile&wvr=6&mod=myfollowhisfan&refer_flag=1005050010_&is_all=1'
-        # url = 'https://weibo.com/PANDORAChina?is_all=1'
-        # url = 'https://weibo.com/apmmc?nick=APM_MONACO&is_hot=1'
-        # url = 'https://weibo.com/swarovskicom?is_all=1'
+        
         config = get_config()
         if not config:
             print('配置读取失败,请检查是否有configure.json文件')
@@ -88,8 +78,8 @@ class T11Spider(scrapy.Spider):
         # print(js)
         user_info = js['data']['userInfo']
         print('微博条数', user_info['statuses_count'], '用户id', user_info['id'])
-        for page in range(1, user_info['statuses_count']//10+1):
-        # for page in range(44, 45):
+        # for page in range(1, user_info['statuses_count']//10+1):
+        for page in range(1, 20):
             yield scrapy.Request(url='https://m.weibo.cn/api/container/getIndex?containerid=107603{0}&page={1}'.format(user_info['id'], page), callback=self.parse_page)
 
     def parse_page(self, response):
@@ -129,31 +119,37 @@ class T11Spider(scrapy.Spider):
         """
         解析微博评论
         """
+        try:
 
-        comment_json = reponse.json()
-        # print("\033[1;32m *\033[0m"*60)
-        # pprint.pprint(comment_json)
-        # print("\033[1;32m *\033[0m" * 60)
-        comments = []
-        # try:
-        if comment_json['ok']:
-            comments_data = comment_json['data']
-            comments_data = comments_data['data']
+            comment_json = reponse.json()
+            # print("\033[1;32m *\033[0m"*60)
+            # pprint.pprint(comment_json)
+            # print("\033[1;32m *\033[0m" * 60)
+            comments = []
+            # try:
+            if comment_json['ok']:
+                comments_data = comment_json['data']
+                comments_data = comments_data['data']
 
-            for com_d in comments_data:
-                print(type(com_d),com_d)
-                if com_d['text'].find('<')>=0:
-                    comment = parsel.Selector(com_d['text']).xpath('string(.)').get()
-                else:
-                    comment = com_d['text']
-                comments.append((comment+' 点赞数：'+str(com_d['like_count'])))    
-        else:
+                for com_d in comments_data:
+                    print(type(com_d),com_d)
+                    if com_d['text'].find('<')>=0:
+                        comment = parsel.Selector(com_d['text']).xpath('string(.)').get()
+                    else:
+                        comment = com_d['text']
+                    comments.append((comment, str(com_d['like_count'])))    
+            else:
+                print("\033[1;32m *\033[0m"*60)
+                print("\033[1;31m get_on_weibo_error,没有评论\033[0m")
+                print("\033[1;32m *\033[0m" * 60)
+
+            weibo_item.comments = comments
+            yield weibo_item
+        except Exception as e:
             print("\033[1;32m *\033[0m"*60)
-            print("\033[1;31m get_on_weibo_error,没有评论\033[0m")
+            print("\033[1;31m 评论解析失败\033[0m")
+            print(e)
             print("\033[1;32m *\033[0m" * 60)
-
-        weibo_item.comments = comments
-        yield weibo_item
 
     def get_one_weibo(self,weibo_info):
         try:
